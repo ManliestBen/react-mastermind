@@ -24,16 +24,22 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-          <button onClick={() => 
-            this.setState({selColorIdx: ++this.state.selColorIdx % 4})}>
+          <button onClick={() => this.setState((state) => ({selColorIdx: ++state.selColorIdx % 4}))}>;
             Next Color
           </button>
         Selected Color: {colors[this.state.selColorIdx]}
         <header className="App-header">React Mastermind</header>
         <div className="flex-h">
-          <GameBoard />
+          <GameBoard 
+            colors={colors}
+            guesses={this.state.guesses}
+          
+          />
           <div>
-            <ColorPicker />
+            <ColorPicker 
+              colors={colors} 
+              selColorIdx={this.state.selColorIdx}
+              />
             <GameTimer />
             <NewGameButton />
           </div>
