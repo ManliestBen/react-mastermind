@@ -18,8 +18,8 @@ class App extends Component {
       guesses: [this.getNewGuess()],
       code: this.genCode()
     };
-  }
-
+  } 
+  
   getNewGuess() {
     return {
       code: [null, null, null, null],
@@ -39,7 +39,9 @@ class App extends Component {
     let lastGuess = this.state.guesses.length - 1;
     return this.state.guesses[lastGuess].score.perfect === 4 ? lastGuess + 1 : 0;
   }
-
+  handleColorSelection = (colorIdx) => {
+    this.setState({selColorIdx: colorIdx});
+  }
   render() {
     let winTries = this.getWinTries();
     return (
@@ -54,6 +56,7 @@ class App extends Component {
             <ColorPicker
               colors={colors}
               selColorIdx={this.state.selColorIdx}
+              handleColorSelection={this.handleColorSelection}
             />
             <GameTimer />
             <NewGameButton />
