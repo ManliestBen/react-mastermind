@@ -15,15 +15,14 @@ class App extends Component {
     // in its properties
     this.state = {
       selColorIdx: 0,
-      guesses: [this.getNewGuess(), this.getNewGuess(), this.getNewGuess(), this.getNewGuess()],
+      guesses: [this.getNewGuess()],
       code: this.genCode()
     };
   }
 
   getNewGuess() {
     return {
-      // code: [null, null, null, null],
-      code: [3, 2, 1, 0], // for testing purposes
+      code: [null, null, null, null],
       score: {
         perfect: 0,
         almost: 0
