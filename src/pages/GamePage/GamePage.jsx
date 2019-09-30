@@ -4,7 +4,7 @@ import ColorPicker from '../../components/ColorPicker/ColorPicker';
 import GameTimer from '../../components/GameTimer/GameTimer';
 import NewGameButton from '../../components/NewGameButton/NewGameButton';
 
-const GamePage = (props) => {
+const GamePage = props => {
   return (
     <div className="App">
       <div className="flex-h align-flex-end">

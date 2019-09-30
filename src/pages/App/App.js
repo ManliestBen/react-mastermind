@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 
 import GamePage from '../GamePage/GamePage';
-import { Route } from 'react-router-dom';
+import SettingsPage from '../SettingsPage/SettingsPage';
+import { Route, Switch } from 'react-router-dom';
 
 const colors = ['#7CCCE5', '#FDE47F', '#E04644', '#B576AD'];
 
@@ -136,6 +137,7 @@ class App extends Component {
     return (
       <div className="App">
         <header className='App-header-footer'>R E A C T &nbsp;&nbsp;&nbsp;  M A S T E R M I N D</header>
+        <Switch>
         <Route exact path='/' render={() =>
           <GamePage
             winTries={winTries}
@@ -148,6 +150,13 @@ class App extends Component {
             handleScoreClick={this.handleScoreClick}
           />
         } />
+        <Route exact path='/settings' render={(props) =>
+          <SettingsPage {...props}/>
+        }
+        />
+          
+        
+        </Switch>
       </div>
     );
   }
