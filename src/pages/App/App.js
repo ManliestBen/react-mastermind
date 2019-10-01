@@ -14,13 +14,15 @@ class App extends Component {
   constructor() {
     super();
     this.state = {...this.getInitialState(), difficulty: 'Easy'};
+    console.log('App: constructor');
   }
 
   getInitialState() {
     return {
       selColorIdx: 0,
       guesses: [this.getNewGuess()],
-      code: this.genCode()
+      code: this.genCode(),
+      elapsedTime: 0
     };
   }
 
@@ -141,8 +143,18 @@ class App extends Component {
       guesses: guessesCopy
     });
   }
-
+  handleTimerUpdate = () => {
+    this.setState((state) => ({elapsedTime: ++state.elapsedTime}));
+  }
+  componentDidMount() {
+    console.log('App: componentDidMount');
+  }
+  componentDidUpdate() {
+    console.log('App: componentDidUpdate');
+  }
+  
   render() {
+    console.log('App: render');
     let winTries = this.getWinTries();
     return (
       <div>
@@ -158,6 +170,8 @@ class App extends Component {
               handleNewGameClick={this.handleNewGameClick}
               handlePegClick={this.handlePegClick}
               handleScoreClick={this.handleScoreClick}
+              elapsedTime={this.state.elapsedTime}
+              handleTimerUpdate={this.handleTimerUpdate}
             />
           } />
           <Route exact path='/settings' render={props => 
