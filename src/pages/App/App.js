@@ -20,10 +20,7 @@ class App extends Component {
     return {
       selColorIdx: 0,
       guesses: [this.getNewGuess()],
-      code: this.genCode(),
-      // new state coming in!
-      elapsedTime: 0,
-      isTiming: true
+      code: this.genCode()
     };
   }
 
@@ -47,10 +44,6 @@ class App extends Component {
     // if winner, return num guesses, otherwise 0 (no winner)
     let lastGuess = this.state.guesses.length - 1;
     return this.state.guesses[lastGuess].score.perfect === 4 ? lastGuess + 1 : 0;
-  }
-
-  handleTimerUpdate = () => {
-    this.setState((curState) => ({elapsedTime: ++curState.elapsedTime}));
   }
 
   handleDifficultyChange = (level) => {
@@ -130,17 +123,22 @@ class App extends Component {
     let guessCopy = {...guessesCopy[currentGuessIdx]};
     let scoreCopy = {...guessCopy.score};
 
+    // Set scores
     scoreCopy.perfect = perfect;
     scoreCopy.almost = almost;
+
+    // Update the NEW guess with the NEW score object
     guessCopy.score = scoreCopy;
+
+    // Update the NEW guesses with the NEW guess object
     guessesCopy[currentGuessIdx] = guessCopy;
 
+    // Add a new guess if not a winner
     if (perfect !== 4) guessesCopy.push(this.getNewGuess());
 
+    // Finally, update the state with the NEW guesses array
     this.setState({
-      guesses: guessesCopy,
-      // This is a great way to update isTiming
-      isTiming: perfect !== 4
+      guesses: guessesCopy
     });
   }
 
@@ -156,13 +154,10 @@ class App extends Component {
               colors={colors[this.state.difficulty]}
               selColorIdx={this.state.selColorIdx}
               guesses={this.state.guesses}
-              elapsedTime={this.state.elapsedTime}
-              isTiming={this.state.isTiming}
               handleColorSelection={this.handleColorSelection}
               handleNewGameClick={this.handleNewGameClick}
               handlePegClick={this.handlePegClick}
               handleScoreClick={this.handleScoreClick}
-              handleTimerUpdate={this.handleTimerUpdate}
             />
           } />
           <Route exact path='/settings' render={props => 
