@@ -14,7 +14,6 @@ class App extends Component {
   constructor() {
     super();
     this.state = {...this.getInitialState(), difficulty: 'Easy'};
-    console.log('App: constructor');
   }
 
   getInitialState() {
@@ -22,7 +21,9 @@ class App extends Component {
       selColorIdx: 0,
       guesses: [this.getNewGuess()],
       code: this.genCode(),
-      elapsedTime: 0
+      // new state coming in!
+      elapsedTime: 0,
+      isTiming: true
     };
   }
 
@@ -46,6 +47,10 @@ class App extends Component {
     // if winner, return num guesses, otherwise 0 (no winner)
     let lastGuess = this.state.guesses.length - 1;
     return this.state.guesses[lastGuess].score.perfect === 4 ? lastGuess + 1 : 0;
+  }
+
+  handleTimerUpdate = () => {
+    this.setState((curState) => ({elapsedTime: ++curState.elapsedTime}));
   }
 
   handleDifficultyChange = (level) => {
@@ -125,36 +130,21 @@ class App extends Component {
     let guessCopy = {...guessesCopy[currentGuessIdx]};
     let scoreCopy = {...guessCopy.score};
 
-    // Set scores
     scoreCopy.perfect = perfect;
     scoreCopy.almost = almost;
-
-    // Update the NEW guess with the NEW score object
     guessCopy.score = scoreCopy;
-
-    // Update the NEW guesses with the NEW guess object
     guessesCopy[currentGuessIdx] = guessCopy;
 
-    // Add a new guess if not a winner
     if (perfect !== 4) guessesCopy.push(this.getNewGuess());
 
-    // Finally, update the state with the NEW guesses array
     this.setState({
-      guesses: guessesCopy
+      guesses: guessesCopy,
+      // This is a great way to update isTiming
+      isTiming: perfect !== 4
     });
   }
-  handleTimerUpdate = () => {
-    this.setState((state) => ({elapsedTime: ++state.elapsedTime}));
-  }
-  componentDidMount() {
-    console.log('App: componentDidMount');
-  }
-  componentDidUpdate() {
-    console.log('App: componentDidUpdate');
-  }
-  
+
   render() {
-    console.log('App: render');
     let winTries = this.getWinTries();
     return (
       <div>
@@ -166,11 +156,12 @@ class App extends Component {
               colors={colors[this.state.difficulty]}
               selColorIdx={this.state.selColorIdx}
               guesses={this.state.guesses}
+              elapsedTime={this.state.elapsedTime}
+              isTiming={this.state.isTiming}
               handleColorSelection={this.handleColorSelection}
               handleNewGameClick={this.handleNewGameClick}
               handlePegClick={this.handlePegClick}
               handleScoreClick={this.handleScoreClick}
-              elapsedTime={this.state.elapsedTime}
               handleTimerUpdate={this.handleTimerUpdate}
             />
           } />

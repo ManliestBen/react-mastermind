@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import styles from './GameTimer.module.css';
 
 function formatTime(seconds) {
@@ -8,22 +8,30 @@ function formatTime(seconds) {
 }
 
 class GameTimer extends Component {
+
+  handleTick = () => {
+    // Ignore ticks?
+    if (!this.props.isTiming) return;
+    this.props.handleTimerUpdate();
+  };
+
+  /*--- Lifecycle Methods ---*/
+
   componentDidMount() {
     this.timerId = setInterval(this.handleTick, 1000);
   }
+
   componentWillUnmount() {
     clearInterval(this.timerId);
   }
-  handleTick = () => {
-    this.props.handleTimerUpdate();
-  }
-  render(){
+
+  render() {
     return (
       <div className={`${styles.GameTimer} flex-h`}>
-      {formatTime(this.props.elapsedTime)}
+        {formatTime(this.props.elapsedTime)}
       </div>
     );
   }
-} 
+}
 
 export default GameTimer;
