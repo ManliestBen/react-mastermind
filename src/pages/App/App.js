@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import './App.css';
 import { Route, Switch } from 'react-router-dom';
+import scoresService from '../../utils/scoresService';
+import userService from '../../utils/userService';
 import GamePage from '../../pages/GamePage/GamePage';
 import SettingsPage from '../SettingsPage/SettingsPage';
 import HighScoresPage from '../HighScoresPage/HighScoresPage';
 import SignupPage from '../SignupPage/SignupPage';
 import LoginPage from '../LoginPage/LoginPage';
-import scoresService from '../../utils/scoresService';
+
 
 const colors = {
   Easy: ['#7CCCE5', '#FDE47F', '#E04644', '#B576AD'],
@@ -17,7 +19,12 @@ const colors = {
 class App extends Component {
   constructor() {
     super();
-    this.state = {...this.getInitialState(), difficulty: 'Easy', scores: []};
+    this.state = {
+      ...this.getInitialState(), 
+      difficulty: 'Easy',
+      scores: [],
+      user: userService.getUser()
+    };
   }
 
   getInitialState() {
