@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
-import GamePage from '../../pages/GamePage/GamePage';
 import { Route, Switch } from 'react-router-dom';
+import GamePage from '../../pages/GamePage/GamePage';
 import SettingsPage from '../SettingsPage/SettingsPage';
+import HighScoresPage from '../HighScoresPage/HighScoresPage';
+import SignupPage from '../SignupPage/SignupPage';
+import LoginPage from '../LoginPage/LoginPage';
+import scoresService from '../../utils/scoresService';
 
 const colors = {
   Easy: ['#7CCCE5', '#FDE47F', '#E04644', '#B576AD'],
@@ -13,7 +17,7 @@ const colors = {
 class App extends Component {
   constructor() {
     super();
-    this.state = {...this.getInitialState(), difficulty: 'Easy'};
+    this.state = {...this.getInitialState(), difficulty: 'Easy', scores: []};
   }
 
   getInitialState() {
@@ -21,7 +25,6 @@ class App extends Component {
       selColorIdx: 0,
       guesses: [this.getNewGuess()],
       code: this.genCode(),
-      // new state coming in!
       elapsedTime: 0,
       isTiming: true
     };
@@ -48,6 +51,16 @@ class App extends Component {
     let lastGuess = this.state.guesses.length - 1;
     return this.state.guesses[lastGuess].score.perfect === 4 ? lastGuess + 1 : 0;
   }
+
+  isHighScore = (guessesCopy) => {
+    let lastScore = this.state.scores[this.state.scores.length - 1];
+    return (guessesCopy.length < lastScore.numGuesses || (
+      guessesCopy.length === lastScore.numGuesses &&
+      this.state.elapsedTime < lastScore.seconds
+    ));
+  }
+
+  /*--- Callback Methods ---*/
 
   handleTimerUpdate = () => {
     this.setState((curState) => ({elapsedTime: ++curState.elapsedTime}));
@@ -135,13 +148,36 @@ class App extends Component {
     guessCopy.score = scoreCopy;
     guessesCopy[currentGuessIdx] = guessCopy;
 
-    if (perfect !== 4) guessesCopy.push(this.getNewGuess());
+    if (perfect === 4) {
+      // Chicken dinner - need to stop the timer!
+      this.setState(state => ({isTiming: false}), async function() {
+        // Do high-score logic in this callback
+        if ((this.state.scores.length < 20 || this.isHighScore(guessesCopy))) {
+          let initials = prompt('Congrats you have a top-20 score! Enter your initials: ').substr(0, 3);
+          await scoresService.create({ initials, numGuesses: guessesCopy.length, seconds: this.state.elapsedTime });
+          this.props.history.push('/high-scores');
+        }        
+      });
+    } else {
+      guessesCopy.push(this.getNewGuess());
+    }
 
     this.setState({
       guesses: guessesCopy,
       // This is a great way to update isTiming
       isTiming: perfect !== 4
     });
+  }
+
+  handleUpdateScores = (scores) => {
+    this.setState({ scores });
+  }
+
+  /*--- Lifecycle Methods ---*/
+
+  async componentDidMount() {
+    const scores = await scoresService.index();
+    this.setState({ scores });
   }
 
   render() {
@@ -164,7 +200,7 @@ class App extends Component {
               handleScoreClick={this.handleScoreClick}
               handleTimerUpdate={this.handleTimerUpdate}
             />
-          } />
+          }/>
           <Route exact path='/settings' render={props => 
             <SettingsPage
               {...props} 
@@ -172,7 +208,24 @@ class App extends Component {
               difficulty={this.state.difficulty}
               handleDifficultyChange={this.handleDifficultyChange}
             />
-          } />
+          }/>
+          <Route exact path='/signup' render={({ history }) => 
+            <SignupPage
+              history={history}
+              
+            />
+          }/>
+          <Route exact path='/login' render={() => 
+            <LoginPage
+              
+            />
+          }/>
+          <Route exact path='/high-scores' render={() => 
+            <HighScoresPage
+              scores={this.state.scores}
+              handleUpdateScores={this.handleUpdateScores}
+            />
+          }/>
         </Switch>
       </div>
     );
