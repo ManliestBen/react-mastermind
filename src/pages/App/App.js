@@ -180,6 +180,14 @@ class App extends Component {
     this.setState({ scores });
   }
 
+  handleLogout = () => {
+    userService.logout();
+    this.setState({ user: null });
+  }
+
+  handleSignupOrLogin = () => {
+    this.setState({user: userService.getUser()});
+  }
   /*--- Lifecycle Methods ---*/
 
   async componentDidMount() {
@@ -201,11 +209,13 @@ class App extends Component {
               guesses={this.state.guesses}
               elapsedTime={this.state.elapsedTime}
               isTiming={this.state.isTiming}
+              user={this.state.user}
               handleColorSelection={this.handleColorSelection}
               handleNewGameClick={this.handleNewGameClick}
               handlePegClick={this.handlePegClick}
               handleScoreClick={this.handleScoreClick}
               handleTimerUpdate={this.handleTimerUpdate}
+              handleLogout={this.handleLogout}
             />
           }/>
           <Route exact path='/settings' render={props => 
@@ -219,12 +229,14 @@ class App extends Component {
           <Route exact path='/signup' render={({ history }) => 
             <SignupPage
               history={history}
+              handleSignupOrLogin={this.handleSignupOrLogin}
               
             />
           }/>
-          <Route exact path='/login' render={() => 
+          <Route exact path='/login' render={({history}) => 
             <LoginPage
-              
+            history={history}
+            handleSignupOrLogin={this.handleSignupOrLogin}
             />
           }/>
           <Route exact path='/high-scores' render={() => 
