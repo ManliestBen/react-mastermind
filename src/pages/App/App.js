@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Route, Switch } from 'react-router-dom';
-import scoresService from '../../utils/scoresService';
-import userService from '../../utils/userService';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import GamePage from '../../pages/GamePage/GamePage';
 import SettingsPage from '../SettingsPage/SettingsPage';
 import HighScoresPage from '../HighScoresPage/HighScoresPage';
 import SignupPage from '../SignupPage/SignupPage';
 import LoginPage from '../LoginPage/LoginPage';
-
+import scoresService from '../../utils/scoresService';
+import userService from '../../utils/userService';
+import tokenService from '../../utils/tokenService';
 
 const colors = {
   Easy: ['#7CCCE5', '#FDE47F', '#E04644', '#B576AD'],
@@ -20,9 +20,10 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      ...this.getInitialState(), 
+      ...this.getInitialState(),
       difficulty: 'Easy',
       scores: [],
+      // Initialize user if there's a token, otherwise null
       user: userService.getUser()
     };
   }
@@ -188,6 +189,7 @@ class App extends Component {
   handleSignupOrLogin = () => {
     this.setState({user: userService.getUser()});
   }
+
   /*--- Lifecycle Methods ---*/
 
   async componentDidMount() {
@@ -209,13 +211,13 @@ class App extends Component {
               guesses={this.state.guesses}
               elapsedTime={this.state.elapsedTime}
               isTiming={this.state.isTiming}
-              user={this.state.user}
               handleColorSelection={this.handleColorSelection}
               handleNewGameClick={this.handleNewGameClick}
               handlePegClick={this.handlePegClick}
               handleScoreClick={this.handleScoreClick}
               handleTimerUpdate={this.handleTimerUpdate}
               handleLogout={this.handleLogout}
+              user={this.state.user}
             />
           }/>
           <Route exact path='/settings' render={props => 
@@ -230,20 +232,22 @@ class App extends Component {
             <SignupPage
               history={history}
               handleSignupOrLogin={this.handleSignupOrLogin}
-              
             />
           }/>
-          <Route exact path='/login' render={({history}) => 
+          <Route exact path='/login' render={({ history }) => 
             <LoginPage
-            history={history}
-            handleSignupOrLogin={this.handleSignupOrLogin}
+              history={history}
+              handleSignupOrLogin={this.handleSignupOrLogin}
             />
           }/>
           <Route exact path='/high-scores' render={() => 
-            <HighScoresPage
-              scores={this.state.scores}
-              handleUpdateScores={this.handleUpdateScores}
-            />
+            userService.getUser() ? 
+              <HighScoresPage
+                scores={this.state.scores}
+                handleUpdateScores={this.handleUpdateScores}
+              />
+            :
+              <Redirect to='/login'/>
           }/>
         </Switch>
       </div>
