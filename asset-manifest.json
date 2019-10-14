@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/react-mastermind/static/css/main.3f99c518.chunk.css",
+    "main.js": "/react-mastermind/static/js/main.c6078338.chunk.js",
+    "main.js.map": "/react-mastermind/static/js/main.c6078338.chunk.js.map",
+    "runtime-main.js": "/react-mastermind/static/js/runtime-main.2e048b5d.js",
+    "runtime-main.js.map": "/react-mastermind/static/js/runtime-main.2e048b5d.js.map",
+    "static/js/2.e3cd9784.chunk.js": "/react-mastermind/static/js/2.e3cd9784.chunk.js",
+    "static/js/2.e3cd9784.chunk.js.map": "/react-mastermind/static/js/2.e3cd9784.chunk.js.map",
+    "index.html": "/react-mastermind/index.html",
+    "precache-manifest.580e8fd72fc7e4301a0b11a968b5a11c.js": "/react-mastermind/precache-manifest.580e8fd72fc7e4301a0b11a968b5a11c.js",
+    "service-worker.js": "/react-mastermind/service-worker.js",
+    "static/css/main.3f99c518.chunk.css.map": "/react-mastermind/static/css/main.3f99c518.chunk.css.map"
+  }
+}
